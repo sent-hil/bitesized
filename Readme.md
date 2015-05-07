@@ -22,15 +22,17 @@ Initialize client with Redis connection and defaults:
     "github.com/sent-hil/bitesized"
   )
 
-  // initialize redis session
-  redisuri := "localhost:6379"
-  rs, err := redis.NewRedisSession(&redis.RedisConf{Server: redisuri})
-  if err != nil {
-    return err
-  }
+  func main() {
+    // initialize redis session
+    redisuri := "localhost:6379"
+    rs, err := redis.Dial("tcp", redisuri)
+    if err != nil {
+      return err
+    }
 
-  // initialize client
-  client := bitesized.NewClient(rs)
+    // initialize client
+    client := bitesized.NewClient(rs)
+  }
 ```
 
 Optionally set timings you want to track; by default these are created:
@@ -54,14 +56,18 @@ Optionally set prefix to use for ALL keys; defaults to `bitesized`
   event := bitesized.NewEvent("dodge rock", "indianajones", nil)
 
   // track an event, ie. save to redis
-  client.Track(event)
+  err = client.Track(event)
+  if err != nil {
+    return err
+  }
 ```
 
 Get a metric:
 
 ```go
-  from := time.Date(2015, time.January, 1, 1, 0, 0, 0, time.UTC)
-  till := time.Date(2015, time.January, 3, 1, 0, 0, 0, time.UTC)
+  from := time.Date(2015, time.January, 1, 0, 0, 0, 0, time.UTC)
+  till := time.Date(2015, time.January, 3, 0, 0, 0, 0, time.UTC)
+
   rs, err := bitesized.GetMetricRetention(event, bitesized.Daily, from, till)
   if err != nil {
     return err
@@ -74,7 +80,7 @@ This returns a result like below. Result key is sorted desc by time:
   {
       "2015-01-03 00:00": [30, 17, 60],
       "2015-01-02 00:00": [49, 24,  0],
-      "2015-01-03 00:00": [67,  0,  0]
+      "2015-01-01 00:00": [67,  0,  0]
   }
 ```
 
