@@ -14,8 +14,7 @@ type Bitesized struct {
 	KeyPrefix string
 }
 
-// NewClient initializes a Bitesized client metrics. It initializes redis
-// connection & default values for client.
+// NewClient initializes a Bitesized client with redis conn & default values.
 func NewClient(redisuri string) (*Bitesized, error) {
 	redissession, err := redis.Dial("tcp", redisuri)
 	if err != nil {
