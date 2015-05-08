@@ -18,20 +18,19 @@ Initialize client with Redis connection and defaults:
   package main
 
   import (
+    "log"
+
     "github.com/garyburd/redigo/redis"
     "github.com/sent-hil/bitesized"
   )
 
   func main() {
-    // initialize redis session
-    redisuri := "localhost:6379"
-    rs, err := redis.Dial("tcp", redisuri)
-    if err != nil {
-      return err
-    }
-
     // initialize client
-    client := bitesized.NewClient(rs)
+    redisuri := "localhost:6379"
+    client, err := bitesized.NewClient(rs)
+    if err != nil {
+      log.Fatal(err)
+    }
   }
 ```
 

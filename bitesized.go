@@ -5,15 +5,22 @@ import (
 )
 
 type Bitesized struct {
-	Store     redis.Conn
+	store     redis.Conn
 	Intervals []Interval
 	KeyPrefix string
 }
 
-func NewClient(r redis.Conn) *Bitesized {
-	return &Bitesized{
-		Store:     r,
+func NewClient(redisuri string) (*Bitesized, error) {
+	redissession, err := redis.Dial("tcp", redisuri)
+	if err != nil {
+		return nil, err
+	}
+
+	client := &Bitesized{
+		store:     redissession,
 		Intervals: DefaultIntervals,
 		KeyPrefix: DefaultKeyPrefix,
 	}
+
+	return client, nil
 }
