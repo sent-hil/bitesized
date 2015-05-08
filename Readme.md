@@ -12,7 +12,7 @@ It started when I saw a [blog post](http://blog.getspool.com/2011/11/29/fast-eas
 
 ## Usage
 
-Initialize client with Redis connection and defaults:
+Initialize client:
 
 ```go
 package main
@@ -25,17 +25,15 @@ import (
 )
 
 func main() {
-  // initialize client
   redisuri := "localhost:6379"
-  client, err := bitesized.NewClient(rs)
+  client, err := bitesized.NewClient(redisuri)
   if err != nil {
     log.Fatal(err)
   }
 }
 ```
 
-Optionally set timings you want to track; by default these are created:
-`hourly, daily, weekly and monthly`
+Optionally, set intervals you want to track; by default these intervals are tracked: `hourly, daily, weekly and monthly`
 
 ```go
 client.Intervals = []Interval{
@@ -43,7 +41,7 @@ client.Intervals = []Interval{
 }
 ```
 
-Optionally set prefix to use for ALL keys; defaults to `bitesized`
+Optionally, set prefix to use for ALL keys; defaults to `bitesized`
 
 ```go
 client.KeyPrefix = "bitesized"
