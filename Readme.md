@@ -48,12 +48,8 @@ client.KeyPrefix = "bitesized"
 ```
 
 ```go
-// initialize new event with name, username & optional timestamp;
-// last arg is optional, defaults to `time.Now()`
-event := bitesized.NewEvent("dodge rock", "indianajones", nil)
-
-// track an event, ie. save to redis
-err = client.Track(event)
+// initialize new event with name, username & timestamp;
+err = client.TrackEvent("dodge rock", "indianajones", time.Now())
 if err != nil {
   return err
 }

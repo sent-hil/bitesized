@@ -2,6 +2,7 @@ package bitesized
 
 import (
 	"testing"
+	"time"
 
 	. "github.com/smartystreets/goconvey/convey"
 )
@@ -21,5 +22,17 @@ func TestNewClient(t *testing.T) {
 			So(len(client.Intervals), ShouldBeGreaterThan, 1)
 			So(client.KeyPrefix, ShouldEqual, "bitesized")
 		})
+	})
+}
+
+func TestTrackEvent(t *testing.T) {
+	Convey("It should track event in single interval", t, func() {
+		client, err := NewClient(testredis)
+		So(err, ShouldBeNil)
+
+		client.Intervals = []Interval{Hour}
+
+		err = client.TrackEvent("dodge rock", "indianajones", time.Now())
+		So(err, ShouldBeNil)
 	})
 }

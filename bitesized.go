@@ -1,6 +1,8 @@
 package bitesized
 
 import (
+	"time"
+
 	"github.com/garyburd/redigo/redis"
 )
 
@@ -28,4 +30,16 @@ func NewClient(redisuri string) (*Bitesized, error) {
 	}
 
 	return client, nil
+}
+
+func (b *Bitesized) TrackEvent(name, username string, timestamp time.Time) error {
+	if name == "" || username == "" {
+		return ErrInvalidArg
+	}
+
+	if timestamp.IsZero() {
+		timestamp = time.Now()
+	}
+
+	return nil
 }
