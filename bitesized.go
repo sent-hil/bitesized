@@ -1,6 +1,7 @@
 package bitesized
 
 import (
+	"strings"
 	"time"
 
 	"github.com/garyburd/redigo/redis"
@@ -37,6 +38,9 @@ func (b *Bitesized) TrackEvent(name, username string, tstamp time.Time) error {
 		return ErrInvalidArg
 	}
 
+	name = dasherize(name)
+	username = dasherize(username)
+
 	offset, err := b.getOrSetUser(username)
 	if err != nil {
 		return err
@@ -56,18 +60,14 @@ func (b *Bitesized) storeIntervals(name string, offset int, tstamp time.Time) er
 	b.store.Send("MULTI")
 
 	for _, interval := range b.Intervals {
-		key := b.intervalKey(tstamp, interval)
+		intervalkey := nearestInterval(tstamp, interval)
+		key := b.key(name, intervalkey)
 		b.store.Send("SETBIT", key, offset, On)
 	}
 
 	_, err := b.store.Do("EXEC")
 
 	return err
-}
-
-func (b *Bitesized) intervalKey(tstamp time.Time, interval Interval) string {
-	intervalstr := nearestInterval(tstamp, interval)
-	return b.key(intervalstr)
 }
 
 func (b *Bitesized) userListKey() string {
@@ -78,12 +78,16 @@ func (b *Bitesized) userCounterKey() string {
 	return b.key(UserCounterKey)
 }
 
-func (b *Bitesized) key(suffix string) string {
-	key := suffix
+func (b *Bitesized) key(suffix ...string) string {
+	key := strings.Join(suffix, ":")
 
 	if b.KeyPrefix != "" {
 		key = b.KeyPrefix + ":" + key
 	}
 
 	return key
+}
+
+func dasherize(name string) string {
+	return strings.Join(strings.Split(name, " "), "-")
 }

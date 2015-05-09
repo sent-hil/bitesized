@@ -8,7 +8,10 @@ import (
 	. "github.com/smartystreets/goconvey/convey"
 )
 
-var testredis = "localhost:6379"
+var (
+	testredis = "localhost:6379"
+	username  = "indianajones"
+)
 
 func TestNewClient(t *testing.T) {
 	Convey("It should initialize client", t, func() {
@@ -33,10 +36,10 @@ func TestTrackEvent(t *testing.T) {
 		client, err := NewClient(testredis)
 		So(err, ShouldBeNil)
 
-		err = client.TrackEvent("", "indianajones", time.Now())
+		err = client.TrackEvent("", username, time.Now())
 		So(err, ShouldEqual, ErrInvalidArg)
 
-		err = client.TrackEvent("dodge rock", "", time.Now())
+		err = client.TrackEvent("dodge", "", time.Now())
 		So(err, ShouldEqual, ErrInvalidArg)
 	})
 
@@ -46,10 +49,10 @@ func TestTrackEvent(t *testing.T) {
 
 		client.Intervals = []Interval{Year}
 
-		err = client.TrackEvent("dodge rock", "indianajones", randomTime)
+		err = client.TrackEvent("dodge rock", username, randomTime)
 		So(err, ShouldBeNil)
 
-		bitvalue, err := redis.Int(client.store.Do("GETBIT", "bitesized:year:1981", 1))
+		bitvalue, err := redis.Int(client.store.Do("GETBIT", "bitesized:dodge-rock:year:1981", 1))
 		So(err, ShouldBeNil)
 		So(bitvalue, ShouldEqual, 1)
 
@@ -62,15 +65,15 @@ func TestTrackEvent(t *testing.T) {
 
 		client.Intervals = []Interval{Hour, Day, Week, Month, Year}
 
-		err = client.TrackEvent("dodge rock", "indianajones", randomTime)
+		err = client.TrackEvent("dodge rock", username, randomTime)
 		So(err, ShouldBeNil)
 
 		keys := []string{
-			"bitesized:hour:1981-06-12-01:00",
-			"bitesized:day:1981-06-12",
-			"bitesized:week:1981-06-07",
-			"bitesized:month:1981-06",
-			"bitesized:year:1981",
+			"bitesized:dodge-rock:hour:1981-06-12-01:00",
+			"bitesized:dodge-rock:day:1981-06-12",
+			"bitesized:dodge-rock:week:1981-06-07",
+			"bitesized:dodge-rock:month:1981-06",
+			"bitesized:dodge-rock:year:1981",
 		}
 
 		for _, k := range keys {
@@ -91,7 +94,9 @@ func TestKeyBuilder(t *testing.T) {
 		client.KeyPrefix = "prefix"
 		So(client.key("suffix"), ShouldEqual, "prefix:suffix")
 
-		Reset(func() { client.store.Do("FLUSHALL") })
+		Convey("It should join multiple suffixes", func() {
+			So(client.key("one", "two"), ShouldEqual, "prefix:one:two")
+		})
 	})
 
 	Convey("It should return just suffix if no prefix", t, func() {
@@ -101,7 +106,9 @@ func TestKeyBuilder(t *testing.T) {
 		client.KeyPrefix = ""
 		So(client.key("suffix"), ShouldEqual, "suffix")
 
-		Reset(func() { client.store.Do("FLUSHALL") })
+		Convey("It should join multiple suffixes", func() {
+			So(client.key("one", "two"), ShouldEqual, "one:two")
+		})
 	})
 }
 
@@ -112,14 +119,10 @@ func TestUserListKey(t *testing.T) {
 
 		client.KeyPrefix = ""
 		So(client.userListKey(), ShouldEqual, "user-list")
-
-		Reset(func() { client.store.Do("FLUSHALL") })
 	})
 }
 
 func TestGetOrSetUser(t *testing.T) {
-	username := "indianajones"
-
 	Convey("It should save user if new user", t, func() {
 		client, err := NewClient(testredis)
 		So(err, ShouldBeNil)
@@ -135,5 +138,11 @@ func TestGetOrSetUser(t *testing.T) {
 		})
 
 		Reset(func() { client.store.Do("FLUSHALL") })
+	})
+}
+
+func TestDasherize(t *testing.T) {
+	Convey("It should dasherize event", t, func() {
+		So(dasherize("dodge rock"), ShouldEqual, "dodge-rock")
 	})
 }
