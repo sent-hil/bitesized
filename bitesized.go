@@ -32,16 +32,50 @@ func NewClient(redisuri string) (*Bitesized, error) {
 	return client, nil
 }
 
-func (b *Bitesized) TrackEvent(name, username string, timestamp time.Time) error {
+func (b *Bitesized) TrackEvent(name, username string, tstamp time.Time) error {
 	if name == "" || username == "" {
 		return ErrInvalidArg
 	}
 
-	if timestamp.IsZero() {
-		timestamp = time.Now()
+	offset, err := b.getOrSetUser(username)
+	if err != nil {
+		return err
 	}
 
-	return nil
+	return b.storeIntervals(name, offset, tstamp)
+}
+
+func (b *Bitesized) getOrSetUser(username string) (int, error) {
+	script := redis.NewScript(3, getOrsetUserScript)
+	raw, err := script.Do(b.store, b.userListKey(), username, b.userCounterKey())
+
+	return redis.Int(raw, err)
+}
+
+func (b *Bitesized) storeIntervals(name string, offset int, tstamp time.Time) error {
+	b.store.Send("MULTI")
+
+	for _, interval := range b.Intervals {
+		key := b.intervalKey(tstamp, interval)
+		b.store.Send("SETBIT", key, offset, On)
+	}
+
+	_, err := b.store.Do("EXEC")
+
+	return err
+}
+
+func (b *Bitesized) intervalKey(tstamp time.Time, interval Interval) string {
+	intervalstr := nearestInterval(tstamp, interval)
+	return b.key(intervalstr)
+}
+
+func (b *Bitesized) userListKey() string {
+	return b.key(UserListKey)
+}
+
+func (b *Bitesized) userCounterKey() string {
+	return b.key(UserCounterKey)
 }
 
 func (b *Bitesized) key(suffix string) string {

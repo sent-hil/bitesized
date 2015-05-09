@@ -16,9 +16,7 @@ const (
 	Day
 	Week
 	Month
-	Quater
 	Year
-	Decade
 )
 
 func nearestInterval(t time.Time, interval Interval) string {
@@ -39,6 +37,6 @@ func nearestInterval(t time.Time, interval Interval) string {
 		return n.BeginningOfYear().Format(layout)
 	}
 
-	layout := "hour:2006-01-02 15:04"
+	layout := "hour:2006-01-02-15:04"
 	return n.BeginningOfHour().Format(layout)
 }
