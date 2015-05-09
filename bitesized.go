@@ -43,3 +43,13 @@ func (b *Bitesized) TrackEvent(name, username string, timestamp time.Time) error
 
 	return nil
 }
+
+func (b *Bitesized) key(suffix string) string {
+	key := suffix
+
+	if b.KeyPrefix != "" {
+		key = b.KeyPrefix + ":" + key
+	}
+
+	return key
+}

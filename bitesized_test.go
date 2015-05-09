@@ -36,3 +36,23 @@ func TestTrackEvent(t *testing.T) {
 		So(err, ShouldBeNil)
 	})
 }
+
+func TestKeyBuilder(t *testing.T) {
+	Convey("It should return prefix with suffix if prefix", t, func() {
+		client, err := NewClient(testredis)
+		So(err, ShouldBeNil)
+
+		client.KeyPrefix = "prefix"
+
+		So(client.key("suffix"), ShouldEqual, "prefix:suffix")
+	})
+
+	Convey("It should return just suffix if no prefix", t, func() {
+		client, err := NewClient(testredis)
+		So(err, ShouldBeNil)
+
+		client.KeyPrefix = ""
+
+		So(client.key("suffix"), ShouldEqual, "suffix")
+	})
+}
