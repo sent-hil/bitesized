@@ -33,12 +33,12 @@ func NewClient(redisuri string) (*Bitesized, error) {
 	return client, nil
 }
 
-func (b *Bitesized) TrackEvent(name, user string, tstamp time.Time) error {
-	if name == "" || user == "" {
+func (b *Bitesized) TrackEvent(evnt, user string, tstamp time.Time) error {
+	if evnt == "" || user == "" {
 		return ErrInvalidArg
 	}
 
-	name = dasherize(name)
+	evnt = dasherize(evnt)
 	user = dasherize(user)
 
 	offset, err := b.getOrSetUser(user)
@@ -46,21 +46,21 @@ func (b *Bitesized) TrackEvent(name, user string, tstamp time.Time) error {
 		return err
 	}
 
-	return b.storeIntervals(name, offset, tstamp)
+	return b.storeIntervals(evnt, offset, tstamp)
 }
 
-func (b *Bitesized) CountEvent(n string, t time.Time, i Interval) (int, error) {
-	n = dasherize(n)
-	key := b.intervalkey(n, t, i)
+func (b *Bitesized) CountEvent(e string, t time.Time, i Interval) (int, error) {
+	e = dasherize(e)
+	key := b.intervalkey(e, t, i)
 
 	return redis.Int(b.store.Do("BITCOUNT", key))
 }
 
-func (b *Bitesized) DidEvent(n, u string, t time.Time, i Interval) (bool, error) {
-	n = dasherize(n)
+func (b *Bitesized) DidEvent(e, u string, t time.Time, i Interval) (bool, error) {
+	e = dasherize(e)
 	u = dasherize(u)
 
-	key := b.intervalkey(n, t, i)
+	key := b.intervalkey(e, t, i)
 
 	offset, err := b.getOrSetUser(u)
 	if err != nil {
@@ -77,11 +77,11 @@ func (b *Bitesized) getOrSetUser(user string) (int, error) {
 	return redis.Int(raw, err)
 }
 
-func (b *Bitesized) storeIntervals(name string, offset int, t time.Time) error {
+func (b *Bitesized) storeIntervals(evnt string, offset int, t time.Time) error {
 	b.store.Send("MULTI")
 
 	for _, interval := range b.Intervals {
-		key := b.intervalkey(name, t, interval)
+		key := b.intervalkey(evnt, t, interval)
 		b.store.Send("SETBIT", key, offset, On)
 	}
 
@@ -90,9 +90,9 @@ func (b *Bitesized) storeIntervals(name string, offset int, t time.Time) error {
 	return err
 }
 
-func (b *Bitesized) intervalkey(name string, t time.Time, i Interval) string {
+func (b *Bitesized) intervalkey(evnt string, t time.Time, i Interval) string {
 	intervalkey := nearestInterval(t, i)
-	return b.key(name, intervalkey)
+	return b.key(evnt, intervalkey)
 }
 
 func (b *Bitesized) userListKey() string {
@@ -113,6 +113,6 @@ func (b *Bitesized) key(suffix ...string) string {
 	return key
 }
 
-func dasherize(name string) string {
-	return strings.Join(strings.Split(name, " "), "-")
+func dasherize(evnt string) string {
+	return strings.Join(strings.Split(evnt, " "), "-")
 }
