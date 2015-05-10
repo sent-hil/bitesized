@@ -131,6 +131,12 @@ func TestGetOrSetUser(t *testing.T) {
 		So(err, ShouldBeNil)
 		So(id, ShouldEqual, 1)
 
+		Convey("It should save user if new user", func() {
+			id, err = client.getOrSetUser(user + "1")
+			So(err, ShouldBeNil)
+			So(id, ShouldEqual, 2)
+		})
+
 		Convey("It should get user if existing user", func() {
 			id, err := client.getOrSetUser(user)
 			So(err, ShouldBeNil)
