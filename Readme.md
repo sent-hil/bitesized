@@ -62,7 +62,7 @@ Check if user did an event for particular interval:
 didEvent, err := client.DidEvent("dodge rock", "indianajones", time.Now(), bitesized.Hour)
 ```
 
-Get a metric:
+Get retention for specified interval:
 
 ```go
 from := time.Date(2015, time.January, 1, 0, 0, 0, 0, time.UTC)
@@ -75,8 +75,8 @@ This returns a result like below. The keys are sorted asc by time:
 
 ```
 [
-    { "2015-01-01 00:00": [ 30, 17, 11 ] },
-    { "2015-01-02 00:00": [ 49, 24 ] },
-    { "2015-01-03 00:00": [ 67 ] }
+    { "2015-01-01 00:00:00 +0000 UTC": [ 30, 17, 11 ] },
+    { "2015-01-02 00:00:00 +0000 UTC": [ 49, 24 ] },
+    { "2015-01-03 00:00:00 +0000 UTC": [ 67 ] }
 ]
 ```
