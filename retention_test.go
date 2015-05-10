@@ -22,6 +22,13 @@ func TestRetention(t *testing.T) {
 
 		from, till := times[0], times[len(times)-1]
 
+		Convey("It should error if from is after till", func() {
+			till := from.Add(1 * time.Hour)
+
+			_, err := client.Retention("dodge rock", till, from, Hour)
+			So(err, ShouldEqual, ErrFromAfterTill)
+		})
+
 		Convey("It should return result with empty values", func() {
 			retention, err := client.Retention("dodge rock", from, till, Hour)
 			So(err, ShouldBeNil)

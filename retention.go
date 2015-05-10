@@ -9,6 +9,10 @@ import (
 type Retention map[string][]int
 
 func (b *Bitesized) Retention(e string, f, t time.Time, i Interval) ([]Retention, error) {
+	if f.After(t) {
+		return nil, ErrFromAfterTill
+	}
+
 	e = dasherize(e)
 	retentions := []Retention{}
 
