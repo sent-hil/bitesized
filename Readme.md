@@ -71,12 +71,12 @@ till := time.Date(2015, time.January, 3, 0, 0, 0, 0, time.UTC)
 rs, err := client.GetRetention("dodge rock", bitesized.Daily, from, till)
 ```
 
-This returns a result like below. Result key is sorted asc by time:
+This returns a result like below. The keys are sorted asc by time:
 
 ```
-{
-    "2015-01-01 00:00": [30, 17, 60],
-    "2015-01-02 00:00": [49, 24,  0],
-    "2015-01-03 00:00": [67,  0,  0]
-}
+[
+    { "2015-01-01 00:00": [ 30, 17, 11 ] },
+    { "2015-01-02 00:00": [ 49, 24 ] },
+    { "2015-01-03 00:00": [ 67 ] }
+]
 ```

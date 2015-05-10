@@ -40,3 +40,19 @@ func nearestInterval(t time.Time, interval Interval) string {
 	layout := "hour:2006-01-02-15:04"
 	return n.BeginningOfHour().Format(layout)
 }
+
+func getDuration(i Interval) time.Duration {
+	switch i {
+	case Day:
+		return 24 * time.Hour
+	case Week:
+		return 7 * 24 * time.Hour
+	case Month:
+		//TODO: return 30 or 31 depending on month
+		return 30 * 24 * time.Hour
+	case Year:
+		return 365 * 24 * time.Hour
+	}
+
+	return time.Hour
+}

@@ -154,7 +154,8 @@ func TestCountEvent(t *testing.T) {
 		})
 
 		Convey("It should return count of users who did event", func() {
-			client.TrackEvent("dodge rock", user, time.Now())
+			err := client.TrackEvent("dodge rock", user, time.Now())
+			So(err, ShouldBeNil)
 
 			count, err := client.CountEvent("dodge rock", time.Now(), Hour)
 			So(err, ShouldBeNil)
