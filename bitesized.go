@@ -112,7 +112,3 @@ func (b *Bitesized) key(suffix ...string) string {
 
 	return key
 }
-
-func dasherize(evnt string) string {
-	return strings.Join(strings.Split(evnt, " "), "-")
-}

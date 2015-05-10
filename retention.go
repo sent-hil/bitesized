@@ -24,15 +24,16 @@ func (b *Bitesized) Retention(e string, f, t time.Time, i Interval) ([]Retention
 		for {
 			sKey := b.intervalkey(e, start, i)
 			eKey := b.intervalkey(e, end, i)
+			rKey := randSeq(5)
 
-			c, err := redis.Int(b.store.Do("BITOP", "AND", sKey+eKey, sKey, eKey))
+			c, err := redis.Int(b.store.Do("BITOP", "AND", rKey, sKey, eKey))
 			if err != nil {
 				return nil, err
 			}
 
 			counts = append(counts, c)
 
-			if _, err := b.store.Do("DEL", sKey+eKey); err != nil {
+			if _, err := b.store.Do("DEL", rKey); err != nil {
 				return nil, err
 			}
 
