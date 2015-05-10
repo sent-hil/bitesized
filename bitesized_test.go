@@ -194,10 +194,3 @@ func TestDidEvent(t *testing.T) {
 		})
 	})
 }
-
-func TestDasherize(t *testing.T) {
-	Convey("It should split event on space and join with dash", t, func() {
-		So(dasherize("dodge"), ShouldEqual, "dodge")
-		So(dasherize("dodge rock"), ShouldEqual, "dodge-rock")
-	})
-}
