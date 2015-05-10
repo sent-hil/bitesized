@@ -10,7 +10,7 @@ import (
 
 var (
 	testredis = "localhost:6379"
-	username  = "indianajones"
+	user      = "indianajones"
 )
 
 func TestNewClient(t *testing.T) {
@@ -32,11 +32,11 @@ func TestNewClient(t *testing.T) {
 }
 
 func TestTrackEvent(t *testing.T) {
-	Convey("It should return error unless event or username", t, func() {
+	Convey("It should return error unless event or user", t, func() {
 		client, err := NewClient(testredis)
 		So(err, ShouldBeNil)
 
-		err = client.TrackEvent("", username, time.Now())
+		err = client.TrackEvent("", user, time.Now())
 		So(err, ShouldEqual, ErrInvalidArg)
 
 		err = client.TrackEvent("dodge", "", time.Now())
@@ -49,7 +49,7 @@ func TestTrackEvent(t *testing.T) {
 
 		client.Intervals = []Interval{Year}
 
-		err = client.TrackEvent("dodge rock", username, randomTime)
+		err = client.TrackEvent("dodge rock", user, randomTime)
 		So(err, ShouldBeNil)
 
 		bitvalue, err := redis.Int(client.store.Do("GETBIT", "bitesized:dodge-rock:year:1981", 1))
@@ -65,7 +65,7 @@ func TestTrackEvent(t *testing.T) {
 
 		client.Intervals = []Interval{Hour, Day, Week, Month, Year}
 
-		err = client.TrackEvent("dodge rock", username, randomTime)
+		err = client.TrackEvent("dodge rock", user, randomTime)
 		So(err, ShouldBeNil)
 
 		keys := []string{
@@ -127,12 +127,12 @@ func TestGetOrSetUser(t *testing.T) {
 		client, err := NewClient(testredis)
 		So(err, ShouldBeNil)
 
-		id, err := client.getOrSetUser(username)
+		id, err := client.getOrSetUser(user)
 		So(err, ShouldBeNil)
 		So(id, ShouldEqual, 1)
 
 		Convey("It should get user if existing user", func() {
-			id, err := client.getOrSetUser(username)
+			id, err := client.getOrSetUser(user)
 			So(err, ShouldBeNil)
 			So(id, ShouldEqual, 1)
 		})
@@ -158,7 +158,7 @@ func TestCountEvent(t *testing.T) {
 
 		client.Intervals = []Interval{Hour}
 
-		client.TrackEvent("dodge rock", username, time.Now())
+		client.TrackEvent("dodge rock", user, time.Now())
 
 		count, err := client.CountEvent("dodge rock", time.Now(), Hour)
 		So(err, ShouldBeNil)

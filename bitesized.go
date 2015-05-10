@@ -33,15 +33,15 @@ func NewClient(redisuri string) (*Bitesized, error) {
 	return client, nil
 }
 
-func (b *Bitesized) TrackEvent(name, username string, tstamp time.Time) error {
-	if name == "" || username == "" {
+func (b *Bitesized) TrackEvent(name, user string, tstamp time.Time) error {
+	if name == "" || user == "" {
 		return ErrInvalidArg
 	}
 
 	name = dasherize(name)
-	username = dasherize(username)
+	user = dasherize(user)
 
-	offset, err := b.getOrSetUser(username)
+	offset, err := b.getOrSetUser(user)
 	if err != nil {
 		return err
 	}
@@ -56,9 +56,9 @@ func (b *Bitesized) CountEvent(n string, t time.Time, i Interval) (int, error) {
 	return redis.Int(b.store.Do("BITCOUNT", key))
 }
 
-func (b *Bitesized) getOrSetUser(username string) (int, error) {
+func (b *Bitesized) getOrSetUser(user string) (int, error) {
 	script := redis.NewScript(3, getOrsetUserScript)
-	raw, err := script.Do(b.store, b.userListKey(), username, b.userCounterKey())
+	raw, err := script.Do(b.store, b.userListKey(), user, b.userCounterKey())
 
 	return redis.Int(raw, err)
 }
