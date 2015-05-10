@@ -56,6 +56,20 @@ func (b *Bitesized) CountEvent(n string, t time.Time, i Interval) (int, error) {
 	return redis.Int(b.store.Do("BITCOUNT", key))
 }
 
+func (b *Bitesized) DidEvent(n, u string, t time.Time, i Interval) (bool, error) {
+	n = dasherize(n)
+	u = dasherize(u)
+
+	key := b.intervalkey(n, t, i)
+
+	offset, err := b.getOrSetUser(u)
+	if err != nil {
+		return false, err
+	}
+
+	return redis.Bool(b.store.Do("GETBIT", key, offset))
+}
+
 func (b *Bitesized) getOrSetUser(user string) (int, error) {
 	script := redis.NewScript(3, getOrsetUserScript)
 	raw, err := script.Do(b.store, b.userListKey(), user, b.userCounterKey())

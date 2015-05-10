@@ -27,9 +27,6 @@ import (
 func main() {
   redisuri := "localhost:6379"
   client, err := bitesized.NewClient(redisuri)
-  if err != nil {
-    log.Fatal(err)
-  }
 }
 ```
 
@@ -51,18 +48,18 @@ Track an event that an user did:
 
 ```go
 err = client.TrackEvent("dodge rock", "indianajones", time.Now())
-if err != nil {
-  log.Fatal(err)
-}
 ```
 
 Get count of users who did an event on particular interval:
 
 ```go
-count, err = client.CountEvent("dodge rock", time.Hour, time.Now())
-if err != nil {
-  log.Fatal(err)
-}
+count, err = client.CountEvent("dodge rock", time.Now(), time.Hour)
+```
+
+Check if user did an event for particular interval:
+
+```go
+didEvent, err := client.DidEvent("dodge rock", "indianajones", time.Now(), time.Hour)
 ```
 
 Get a metric:
@@ -72,9 +69,6 @@ from := time.Date(2015, time.January, 1, 0, 0, 0, 0, time.UTC)
 till := time.Date(2015, time.January, 3, 0, 0, 0, 0, time.UTC)
 
 rs, err := bitesized.GetMetricRetention(event, bitesized.Daily, from, till)
-if err != nil {
-  log.Fatal(err)
-}
 ```
 
 This returns a result like below. Result key is sorted desc by time:
@@ -91,9 +85,6 @@ Get list of events seen by library:
 
 ```go
 rs, err := bitesized.GetMetricEvents("dodge*")
-if err != nil {
-  log.Fatal(err)
-}
 ```
 
 This returns a result like below.

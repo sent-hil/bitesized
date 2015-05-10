@@ -142,30 +142,55 @@ func TestGetOrSetUser(t *testing.T) {
 }
 
 func TestCountEvent(t *testing.T) {
-	Convey("It should return 0 if no user did event", t, func() {
+	Convey("", t, func() {
 		client, err := NewClient(testredis)
 		So(err, ShouldBeNil)
 
-		count, err := client.CountEvent("dodge rock", time.Now(), Hour)
-		So(err, ShouldBeNil)
+		Convey("It should return 0 if no user did event", func() {
+			count, err := client.CountEvent("dodge rock", time.Now(), Hour)
+			So(err, ShouldBeNil)
 
-		So(count, ShouldEqual, 0)
+			So(count, ShouldEqual, 0)
+		})
+
+		Convey("It should return count of users who did event", func() {
+			client.TrackEvent("dodge rock", user, time.Now())
+
+			count, err := client.CountEvent("dodge rock", time.Now(), Hour)
+			So(err, ShouldBeNil)
+
+			So(count, ShouldEqual, 1)
+
+			Reset(func() { client.store.Do("FLUSHALL") })
+		})
 	})
+}
 
-	Convey("It should return count of users who did event", t, func() {
+func TestDidEvent(t *testing.T) {
+	Convey("", t, func() {
 		client, err := NewClient(testredis)
 		So(err, ShouldBeNil)
 
 		client.Intervals = []Interval{Hour}
 
-		client.TrackEvent("dodge rock", user, time.Now())
+		Convey("It should return no if user didn't do event", func() {
+			didEvent, err := client.DidEvent("dodge rock", user, time.Now(), Hour)
+			So(err, ShouldBeNil)
 
-		count, err := client.CountEvent("dodge rock", time.Now(), Hour)
-		So(err, ShouldBeNil)
+			So(didEvent, ShouldBeFalse)
+		})
 
-		So(count, ShouldEqual, 1)
+		Convey("It should return yes if user did event", func() {
+			err = client.TrackEvent("dodge rock", user, time.Now())
+			So(err, ShouldBeNil)
 
-		Reset(func() { client.store.Do("FLUSHALL") })
+			didEvent, err := client.DidEvent("dodge rock", user, time.Now(), Hour)
+			So(err, ShouldBeNil)
+
+			So(didEvent, ShouldBeTrue)
+
+			Reset(func() { client.store.Do("FLUSHALL") })
+		})
 	})
 }
 
