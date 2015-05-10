@@ -46,7 +46,8 @@ func (b *Bitesized) Retention(e string, f, t time.Time, i Interval) ([]Retention
 			}
 		}
 
-		r := Retention{start.String(): counts}
+		nearest := nearestInterval(start, i)
+		r := Retention{nearest: counts}
 		retentions = append(retentions, r)
 
 		if start = start.Add(-getDuration(i)); f.After(start) {
