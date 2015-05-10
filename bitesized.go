@@ -49,6 +49,13 @@ func (b *Bitesized) TrackEvent(name, username string, tstamp time.Time) error {
 	return b.storeIntervals(name, offset, tstamp)
 }
 
+func (b *Bitesized) CountEvent(n string, t time.Time, i Interval) (int, error) {
+	n = dasherize(n)
+	key := b.intervalkey(n, t, i)
+
+	return redis.Int(b.store.Do("BITCOUNT", key))
+}
+
 func (b *Bitesized) getOrSetUser(username string) (int, error) {
 	script := redis.NewScript(3, getOrsetUserScript)
 	raw, err := script.Do(b.store, b.userListKey(), username, b.userCounterKey())
@@ -56,18 +63,22 @@ func (b *Bitesized) getOrSetUser(username string) (int, error) {
 	return redis.Int(raw, err)
 }
 
-func (b *Bitesized) storeIntervals(name string, offset int, tstamp time.Time) error {
+func (b *Bitesized) storeIntervals(name string, offset int, t time.Time) error {
 	b.store.Send("MULTI")
 
 	for _, interval := range b.Intervals {
-		intervalkey := nearestInterval(tstamp, interval)
-		key := b.key(name, intervalkey)
+		key := b.intervalkey(name, t, interval)
 		b.store.Send("SETBIT", key, offset, On)
 	}
 
 	_, err := b.store.Do("EXEC")
 
 	return err
+}
+
+func (b *Bitesized) intervalkey(name string, t time.Time, i Interval) string {
+	intervalkey := nearestInterval(t, i)
+	return b.key(name, intervalkey)
 }
 
 func (b *Bitesized) userListKey() string {

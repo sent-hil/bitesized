@@ -33,7 +33,7 @@ func main() {
 }
 ```
 
-Optionally, set intervals you want to track; by default these intervals are tracked: `hourly, daily, weekly and monthly`
+Optionally, set intervals you want to track; by default these intervals are tracked: `hourly, daily, weekly and monthly`:
 
 ```go
 client.Intervals = []Interval{
@@ -41,17 +41,27 @@ client.Intervals = []Interval{
 }
 ```
 
-Optionally, set prefix to use for ALL keys; defaults to `bitesized`
+Optionally, set prefix to use for ALL keys; defaults to `bitesized`:
 
 ```go
 client.KeyPrefix = "bitesized"
 ```
 
+Track an event that an user did:
+
 ```go
-// initialize new event with name, username & timestamp;
 err = client.TrackEvent("dodge rock", "indianajones", time.Now())
 if err != nil {
-  return err
+  log.Fatal(err)
+}
+```
+
+Get count of users who did an event on particular interval:
+
+```go
+count, err = client.CountEvent("dodge rock", time.Hour, time.Now())
+if err != nil {
+  log.Fatal(err)
 }
 ```
 
@@ -63,7 +73,7 @@ till := time.Date(2015, time.January, 3, 0, 0, 0, 0, time.UTC)
 
 rs, err := bitesized.GetMetricRetention(event, bitesized.Daily, from, till)
 if err != nil {
-  return err
+  log.Fatal(err)
 }
 ```
 
@@ -82,7 +92,7 @@ Get list of events seen by library:
 ```go
 rs, err := bitesized.GetMetricEvents("dodge*")
 if err != nil {
-  return err
+  log.Fatal(err)
 }
 ```
 

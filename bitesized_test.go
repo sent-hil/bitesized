@@ -141,8 +141,37 @@ func TestGetOrSetUser(t *testing.T) {
 	})
 }
 
+func TestCountEvent(t *testing.T) {
+	Convey("It should return 0 if no user did event", t, func() {
+		client, err := NewClient(testredis)
+		So(err, ShouldBeNil)
+
+		count, err := client.CountEvent("dodge rock", time.Now(), Hour)
+		So(err, ShouldBeNil)
+
+		So(count, ShouldEqual, 0)
+	})
+
+	Convey("It should return count of users who did event", t, func() {
+		client, err := NewClient(testredis)
+		So(err, ShouldBeNil)
+
+		client.Intervals = []Interval{Hour}
+
+		client.TrackEvent("dodge rock", username, time.Now())
+
+		count, err := client.CountEvent("dodge rock", time.Now(), Hour)
+		So(err, ShouldBeNil)
+
+		So(count, ShouldEqual, 1)
+
+		Reset(func() { client.store.Do("FLUSHALL") })
+	})
+}
+
 func TestDasherize(t *testing.T) {
-	Convey("It should dasherize event", t, func() {
+	Convey("It should split event on space and join with dash", t, func() {
+		So(dasherize("dodge"), ShouldEqual, "dodge")
 		So(dasherize("dodge rock"), ShouldEqual, "dodge-rock")
 	})
 }
