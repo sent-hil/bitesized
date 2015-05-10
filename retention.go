@@ -8,11 +8,11 @@ import (
 
 type Retention map[string][]int
 
-func (b *Bitesized) Retention(e string, from, till time.Time, i Interval) ([]Retention, error) {
+func (b *Bitesized) Retention(e string, f, t time.Time, i Interval) ([]Retention, error) {
 	e = dasherize(e)
 	retentions := []Retention{}
 
-	start := till
+	start := t
 	for {
 		end := start
 		counts := []int{}
@@ -32,7 +32,7 @@ func (b *Bitesized) Retention(e string, from, till time.Time, i Interval) ([]Ret
 				return nil, err
 			}
 
-			if end = end.Add(-getDuration(i)); from.After(end) {
+			if end = end.Add(-getDuration(i)); f.After(end) {
 				break
 			}
 		}
@@ -40,7 +40,7 @@ func (b *Bitesized) Retention(e string, from, till time.Time, i Interval) ([]Ret
 		r := Retention{start.String(): counts}
 		retentions = append(retentions, r)
 
-		if start = start.Add(-getDuration(i)); from.After(start) {
+		if start = start.Add(-getDuration(i)); f.After(start) {
 			break
 		}
 	}
