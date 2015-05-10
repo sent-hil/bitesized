@@ -26,7 +26,11 @@ func (b *Bitesized) Retention(e string, f, t time.Time, i Interval) ([]Retention
 			eKey := b.intervalkey(e, end, i)
 			rKey := randSeq(5)
 
-			c, err := redis.Int(b.store.Do("BITOP", "AND", rKey, sKey, eKey))
+			if _, err := b.store.Do("BITOP", "AND", rKey, sKey, eKey); err != nil {
+				return nil, err
+			}
+
+			c, err := redis.Int(b.store.Do("BITCOUNT", rKey))
 			if err != nil {
 				return nil, err
 			}
