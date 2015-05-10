@@ -53,13 +53,13 @@ err = client.TrackEvent("dodge rock", "indianajones", time.Now())
 Get count of users who did an event on particular interval:
 
 ```go
-count, err = client.CountEvent("dodge rock", time.Now(), time.Hour)
+count, err = client.CountEvent("dodge rock", time.Now(), bitesized.Hour)
 ```
 
 Check if user did an event for particular interval:
 
 ```go
-didEvent, err := client.DidEvent("dodge rock", "indianajones", time.Now(), time.Hour)
+didEvent, err := client.DidEvent("dodge rock", "indianajones", time.Now(), bitesized.Hour)
 ```
 
 Get a metric:
@@ -68,27 +68,15 @@ Get a metric:
 from := time.Date(2015, time.January, 1, 0, 0, 0, 0, time.UTC)
 till := time.Date(2015, time.January, 3, 0, 0, 0, 0, time.UTC)
 
-rs, err := bitesized.GetMetricRetention(event, bitesized.Daily, from, till)
+rs, err := client.GetRetention("dodge rock", bitesized.Daily, from, till)
 ```
 
-This returns a result like below. Result key is sorted desc by time:
+This returns a result like below. Result key is sorted asc by time:
 
 ```
 {
-    "2015-01-03 00:00": [30, 17, 60],
+    "2015-01-01 00:00": [30, 17, 60],
     "2015-01-02 00:00": [49, 24,  0],
-    "2015-01-01 00:00": [67,  0,  0]
+    "2015-01-03 00:00": [67,  0,  0]
 }
-```
-
-Get list of events seen by library:
-
-```go
-rs, err := bitesized.GetMetricEvents("dodge*")
-```
-
-This returns a result like below.
-
-```
-["dodge rock", "dodge snakes", "dodge nazis"]
 ```
