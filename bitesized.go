@@ -1,7 +1,6 @@
 package bitesized
 
 import (
-	"strings"
 	"time"
 
 	"github.com/garyburd/redigo/redis"
@@ -88,27 +87,4 @@ func (b *Bitesized) storeIntervals(evnt string, offset int, t time.Time) error {
 	_, err := b.store.Do("EXEC")
 
 	return err
-}
-
-func (b *Bitesized) intervalkey(evnt string, t time.Time, i Interval) string {
-	intervalkey := nearestInterval(t, i)
-	return b.key(evnt, intervalkey)
-}
-
-func (b *Bitesized) userListKey() string {
-	return b.key(UserListKey)
-}
-
-func (b *Bitesized) userCounterKey() string {
-	return b.key(UserCounterKey)
-}
-
-func (b *Bitesized) key(suffix ...string) string {
-	key := strings.Join(suffix, ":")
-
-	if b.KeyPrefix != "" {
-		key = b.KeyPrefix + ":" + key
-	}
-
-	return key
 }
