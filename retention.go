@@ -16,17 +16,22 @@ func (b *Bitesized) Retention(e string, f, t time.Time, i Interval) ([]Retention
 	e = dasherize(e)
 	retentions := []Retention{}
 
-	start := t
+	start := f
 	for {
 		end := start
+		eKeys := []interface{}{}
 		counts := []int{}
 
 		for {
-			sKey := b.intervalkey(e, start, i)
-			eKey := b.intervalkey(e, end, i)
-			rKey := randSeq(5)
+			rKey := randSeq(20)
 
-			if _, err := b.store.Do("BITOP", "AND", rKey, sKey, eKey); err != nil {
+			eKey := b.intervalkey(e, end, i)
+			eKeys = append(eKeys, eKey)
+
+			args := []interface{}{"AND", rKey}
+			args = append(args, eKeys...)
+
+			if _, err := b.store.Do("BITOP", args...); err != nil {
 				return nil, err
 			}
 
@@ -41,7 +46,7 @@ func (b *Bitesized) Retention(e string, f, t time.Time, i Interval) ([]Retention
 				return nil, err
 			}
 
-			if end = end.Add(-getDuration(i)); f.After(end) {
+			if end = end.Add(getDuration(i)); end.After(t) {
 				break
 			}
 		}
@@ -50,7 +55,7 @@ func (b *Bitesized) Retention(e string, f, t time.Time, i Interval) ([]Retention
 		r := Retention{nearest: counts}
 		retentions = append(retentions, r)
 
-		if start = start.Add(-getDuration(i)); f.After(start) {
+		if start = start.Add(getDuration(i)); start.After(t) {
 			break
 		}
 	}
