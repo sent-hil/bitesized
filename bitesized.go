@@ -71,7 +71,7 @@ func (b *Bitesized) DidEvent(e, u string, t time.Time, i Interval) (bool, error)
 }
 
 func (b *Bitesized) getOrSetUser(user string) (int, error) {
-	script := redis.NewScript(3, getOrsetUserScript)
+	script := redis.NewScript(3, getOrSetUserScript)
 	raw, err := script.Do(b.store, b.userListKey(), user, b.userCounterKey())
 
 	return redis.Int(raw, err)

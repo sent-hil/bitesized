@@ -31,6 +31,7 @@ func (b *Bitesized) Retention(e string, f, t time.Time, i Interval) ([]Retention
 			args := []interface{}{"AND", rKey}
 			args = append(args, eKeys...)
 
+			// TODO: use lua scripting
 			if _, err := b.store.Do("BITOP", args...); err != nil {
 				return nil, err
 			}
@@ -51,8 +52,7 @@ func (b *Bitesized) Retention(e string, f, t time.Time, i Interval) ([]Retention
 			}
 		}
 
-		nearest := nearestInterval(start, i)
-		r := Retention{nearest: counts}
+		r := Retention{nearestInterval(start, i): counts}
 		retentions = append(retentions, r)
 
 		if start = start.Add(getDuration(i)); start.After(t) {
