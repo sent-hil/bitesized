@@ -1,6 +1,6 @@
 # bitesized [![Build Status](https://travis-ci.org/sent-hil/bitesized.svg?branch=master)](https://travis-ci.org/sent-hil/bitesized)
 
-bitesized is a library that uses redis's bit operations to store and calculate analytics. It comes with a http server that can be used as an stand alone api.
+bitesized is a library that uses redis's bit operations to store and calculate analytics. It comes with a http server that can be used as an stand alone api (not implemented yet).
 
 ## Motivation
 
@@ -80,3 +80,18 @@ This returns a result like below. The keys are sorted asc by time:
     { "2015-01-03 00:00:00 +0000 UTC": [ 67 ] }
 ]
 ```
+
+# TODO
+
+* Write blog post explaning bitmaps and this library
+* Option to return retention as percentages
+* List of events sorted DESC by user count metric
+* List of events metric
+* Http server
+* Check if user was seen before metric
+* List of users who did an event metric
+* List of users who didn't do an event metric
+* Identify user with properties
+* Total count of users metric
+* Optimize bit maps storage?
+* Add method to undo an event
