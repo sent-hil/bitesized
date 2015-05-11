@@ -18,9 +18,6 @@ Initialize client:
 package main
 
 import (
-  "log"
-
-  "github.com/garyburd/redigo/redis"
   "github.com/sent-hil/bitesized"
 )
 
