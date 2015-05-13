@@ -54,18 +54,18 @@ func (b *Bitesized) GetEvents(prefix string) ([]string, error) {
 	rr := map[string]bool{}
 	keys := []string{}
 
-	for _, k := range allkeys {
+	for _, key := range allkeys {
 		r := regexp.MustCompile(EventRegex)
-		results := r.FindAllStringSubmatch(k, -1)
+		results := r.FindAllStringSubmatch(key, -1)
 
 		if len(results) == 0 || len(results[0]) == 0 {
-			return keys, nil
+			continue
 		}
 
 		evnt := results[0][1]
 		if _, ok := rr[evnt]; !ok {
 			rr[evnt] = true
-			keys = append(keys, k)
+			keys = append(keys, key)
 		}
 	}
 
