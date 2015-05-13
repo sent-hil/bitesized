@@ -78,6 +78,12 @@ events, err := client.GetEvents("*")
 events, err := client.GetEvents("dodge*")
 ```
 
+Check if user was seen before:
+
+```go
+isUserNew, err := client.IsUserNew("indianajones")
+```
+
 This returns a result like below. The keys are sorted asc by time:
 
 ```
@@ -93,9 +99,7 @@ This returns a result like below. The keys are sorted asc by time:
 * Write blog post explaning bitmaps and this library
 * Option to return retention as percentages
 * List of events sorted DESC by user count metric
-* List of events metric
 * Http server
-* Check if user was seen before metric
 * List of users who did an event metric
 * List of users who didn't do an event metric
 * Identify user with properties
