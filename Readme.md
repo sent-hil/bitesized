@@ -68,6 +68,16 @@ till := time.Date(2015, time.January, 3, 0, 0, 0, 0, time.UTC)
 rs, err := client.GetRetention("dodge rock", bitesized.Daily, from, till)
 ```
 
+This returns a result like below. The keys are sorted asc by time:
+
+```
+[
+    { "2015-01-01 00:00:00 +0000 UTC": [ 30, 17, 11 ] },
+    { "2015-01-02 00:00:00 +0000 UTC": [ 49, 24 ] },
+    { "2015-01-03 00:00:00 +0000 UTC": [ 67 ] }
+]
+```
+
 Get list of events:
 
 ```go
@@ -82,16 +92,6 @@ Check if user was seen before:
 
 ```go
 isUserNew, err := client.IsUserNew("indianajones")
-```
-
-This returns a result like below. The keys are sorted asc by time:
-
-```
-[
-    { "2015-01-01 00:00:00 +0000 UTC": [ 30, 17, 11 ] },
-    { "2015-01-02 00:00:00 +0000 UTC": [ 49, 24 ] },
-    { "2015-01-03 00:00:00 +0000 UTC": [ 67 ] }
-]
 ```
 
 Do a bitwise operation on key/keys:
