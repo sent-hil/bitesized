@@ -60,15 +60,6 @@ func (b *Bitesized) Operation(op Op, keys ...string) (int, error) {
 	return count, nil
 }
 
-func (b *Bitesized) getOrSetUser(user string) (int, error) {
-	user = dasherize(user)
-
-	script := redis.NewScript(3, getOrSetUserScript)
-	raw, err := script.Do(b.store, b.userListKey(), user, b.userCounterKey())
-
-	return redis.Int(raw, err)
-}
-
 func (b *Bitesized) storeIntervals(evnt string, offset int, t time.Time) error {
 	b.store.Send("MULTI")
 

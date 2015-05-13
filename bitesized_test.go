@@ -65,31 +65,6 @@ func TestUserListKey(t *testing.T) {
 	})
 }
 
-func TestGetOrSetUser(t *testing.T) {
-	Convey("It should save user if new user", t, func() {
-		client, err := NewClient(testredis)
-		So(err, ShouldBeNil)
-
-		id, err := client.getOrSetUser(user)
-		So(err, ShouldBeNil)
-		So(id, ShouldEqual, 1)
-
-		Convey("It should save user if new user", func() {
-			id, err = client.getOrSetUser(user + "1")
-			So(err, ShouldBeNil)
-			So(id, ShouldEqual, 2)
-		})
-
-		Convey("It should get user if existing user", func() {
-			id, err := client.getOrSetUser(user)
-			So(err, ShouldBeNil)
-			So(id, ShouldEqual, 1)
-		})
-
-		Reset(func() { client.store.Do("FLUSHALL") })
-	})
-}
-
 func TestOperation(t *testing.T) {
 	Convey("", t, func() {
 		client, err := NewClient(testredis)
