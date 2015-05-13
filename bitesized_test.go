@@ -52,7 +52,7 @@ func TestTrackEvent(t *testing.T) {
 		err = client.TrackEvent("dodge rock", user, randomTime)
 		So(err, ShouldBeNil)
 
-		bitvalue, err := redis.Int(client.store.Do("GETBIT", "bitesized:dodge-rock:year:1981", 1))
+		bitvalue, err := redis.Int(client.store.Do("GETBIT", "bitesized:event:dodge-rock:year:1981", 1))
 		So(err, ShouldBeNil)
 		So(bitvalue, ShouldEqual, 1)
 
@@ -69,11 +69,11 @@ func TestTrackEvent(t *testing.T) {
 		So(err, ShouldBeNil)
 
 		keys := []string{
-			"bitesized:dodge-rock:hour:1981-06-12-01:00",
-			"bitesized:dodge-rock:day:1981-06-12",
-			"bitesized:dodge-rock:week:1981-06-07",
-			"bitesized:dodge-rock:month:1981-06",
-			"bitesized:dodge-rock:year:1981",
+			"bitesized:event:dodge-rock:hour:1981-06-12-01:00",
+			"bitesized:event:dodge-rock:day:1981-06-12",
+			"bitesized:event:dodge-rock:week:1981-06-07",
+			"bitesized:event:dodge-rock:month:1981-06",
+			"bitesized:event:dodge-rock:year:1981",
 		}
 
 		for _, k := range keys {
