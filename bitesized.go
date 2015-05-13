@@ -32,6 +32,34 @@ func NewClient(redisuri string) (*Bitesized, error) {
 	return client, nil
 }
 
+func (b *Bitesized) Operation(op Op, keys ...string) (int, error) {
+	if op == NOT && len(keys) != 1 {
+		return 0, ErrNotOpAcceptsOnekey
+	}
+
+	rKey := randSeq(20)
+
+	args := []interface{}{op, rKey}
+	for _, key := range keys {
+		args = append(args, key)
+	}
+
+	if _, err := b.store.Do("BITOP", args...); err != nil {
+		return 0, err
+	}
+
+	count, err := redis.Int(b.store.Do("BITCOUNT", rKey))
+	if err != nil {
+		return 0, err
+	}
+
+	if _, err := b.store.Do("DEL", rKey); err != nil {
+		return 0, err
+	}
+
+	return count, nil
+}
+
 func (b *Bitesized) getOrSetUser(user string) (int, error) {
 	user = dasherize(user)
 

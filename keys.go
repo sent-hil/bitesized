@@ -5,9 +5,16 @@ import (
 	"time"
 )
 
+type Op string
+
 var (
 	On  = 1
 	Off = 0
+
+	AND Op = "AND"
+	OR  Op = "OR"
+	XOR Op = "XOR"
+	NOT Op = "NOT"
 )
 
 var (

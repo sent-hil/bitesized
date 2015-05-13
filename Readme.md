@@ -94,6 +94,19 @@ This returns a result like below. The keys are sorted asc by time:
 ]
 ```
 
+Do a bitwise operation on key/keys:
+
+```go
+count, err := client.Operation(bitesized.AND, "dodge rock", "dodge nazis")
+```
+
+Following operations are support:
+
+* AND
+* OR
+* XOR
+* NOT (only accepts 1 arg)
+
 # TODO
 
 * Write blog post explaning bitmaps and this library

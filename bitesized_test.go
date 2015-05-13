@@ -89,3 +89,45 @@ func TestGetOrSetUser(t *testing.T) {
 		Reset(func() { client.store.Do("FLUSHALL") })
 	})
 }
+
+func TestOperation(t *testing.T) {
+	Convey("", t, func() {
+		client, err := NewClient(testredis)
+		So(err, ShouldBeNil)
+
+		Convey("It should do specified operation", func() {
+			k1 := "testkey1"
+			_, err = client.store.Do("SETBIT", k1, 1, On)
+			So(err, ShouldBeNil)
+
+			k2 := "testkey2"
+			_, err = client.store.Do("SETBIT", k2, 2, On)
+			So(err, ShouldBeNil)
+
+			keys := []string{k1, k2}
+
+			count, err := client.Operation(AND, keys...)
+			So(err, ShouldBeNil)
+			So(count, ShouldEqual, 0)
+
+			count, err = client.Operation(OR, keys...)
+			So(err, ShouldBeNil)
+			So(count, ShouldEqual, 2)
+
+			count, err = client.Operation(XOR, keys...)
+			So(err, ShouldBeNil)
+			So(count, ShouldEqual, 2)
+
+			count, err = client.Operation(NOT, k1)
+			So(err, ShouldBeNil)
+			So(count, ShouldEqual, 7)
+
+			Reset(func() { client.store.Do("FLUSHALL") })
+		})
+
+		Convey("It should accept only one op for NOT", func() {
+			_, err := client.Operation(NOT, "k1", "k2")
+			So(err, ShouldEqual, ErrNotOpAcceptsOnekey)
+		})
+	})
+}
