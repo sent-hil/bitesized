@@ -68,6 +68,16 @@ till := time.Date(2015, time.January, 3, 0, 0, 0, 0, time.UTC)
 rs, err := client.GetRetention("dodge rock", bitesized.Daily, from, till)
 ```
 
+Get list of events:
+
+```go
+// * returns all events
+events, err := client.GetEvents("*")
+
+// dodge* returns events with dodge prefix
+events, err := client.GetEvents("dodge*")
+```
+
 This returns a result like below. The keys are sorted asc by time:
 
 ```

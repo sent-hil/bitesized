@@ -11,6 +11,7 @@ var (
 )
 
 var (
+	EventRegex     = "event:(.*?):"
 	EventPrefixKey = "event"
 	UserListKey    = "user-list"
 	UserCounterKey = "user-counter"
