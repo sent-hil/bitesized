@@ -13,7 +13,6 @@ func (b *Bitesized) Retention(e string, f, t time.Time, i Interval) ([]Retention
 		return nil, ErrFromAfterTill
 	}
 
-	e = dasherize(e)
 	retentions := []Retention{}
 
 	start := f

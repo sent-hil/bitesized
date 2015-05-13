@@ -31,7 +31,12 @@ func (b *Bitesized) userCounterKey() string {
 }
 
 func (b *Bitesized) key(suffix ...string) string {
-	key := strings.Join(suffix, ":")
+	dasherized := []string{}
+	for _, s := range suffix {
+		dasherized = append(dasherized, dasherize(s))
+	}
+
+	key := strings.Join(dasherized, ":")
 
 	if b.KeyPrefix != "" {
 		key = b.KeyPrefix + ":" + key

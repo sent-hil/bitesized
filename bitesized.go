@@ -33,6 +33,8 @@ func NewClient(redisuri string) (*Bitesized, error) {
 }
 
 func (b *Bitesized) getOrSetUser(user string) (int, error) {
+	user = dasherize(user)
+
 	script := redis.NewScript(3, getOrSetUserScript)
 	raw, err := script.Do(b.store, b.userListKey(), user, b.userCounterKey())
 
