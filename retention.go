@@ -2,7 +2,7 @@ package bitesized
 
 import "time"
 
-type Retention map[string][]int
+type Retention map[string][]float64
 
 func (b *Bitesized) Retention(e string, f, t time.Time, i Interval) ([]Retention, error) {
 	if f.After(t) {
@@ -15,7 +15,7 @@ func (b *Bitesized) Retention(e string, f, t time.Time, i Interval) ([]Retention
 	for {
 		end := start
 		keyAggr := []string{}
-		counts := []int{}
+		counts := []float64{}
 
 		for {
 			keyAggr = append(keyAggr, b.intervalkey(e, end, i))
@@ -37,6 +37,33 @@ func (b *Bitesized) Retention(e string, f, t time.Time, i Interval) ([]Retention
 
 		if start = start.Add(getDuration(i)); start.After(t) {
 			break
+		}
+	}
+
+	return retentions, nil
+}
+
+func (b *Bitesized) RetentionPercent(e string, f, t time.Time, i Interval) ([]Retention, error) {
+	retentions, err := b.Retention(e, f, t, i)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, rets := range retentions {
+		for timekey, values := range rets {
+			first := values[0]
+			percents := []float64{first}
+
+			for _, r := range values[1:] {
+				var value float64
+				if first != 0 {
+					value = r / first
+				}
+
+				percents = append(percents, value*100)
+			}
+
+			rets[timekey] = percents
 		}
 	}
 

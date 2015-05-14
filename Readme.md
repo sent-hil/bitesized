@@ -72,9 +72,25 @@ This returns a result like below. The keys are sorted asc by time:
 
 ```
 [
-    { "2015-01-01 00:00:00 +0000 UTC": [ 30, 17, 11 ] },
-    { "2015-01-02 00:00:00 +0000 UTC": [ 49, 24 ] },
-    { "2015-01-03 00:00:00 +0000 UTC": [ 67 ] }
+    { "day:2015-01-01 00:00:00 +0000 UTC": [ 30, 15, 3 ] },
+    { "day:2015-01-02 00:00:00 +0000 UTC": [ 50, 25 ] },
+    { "day:2015-01-03 00:00:00 +0000 UTC": [ 67 ] }
+]
+```
+
+Get retention for specified interval in percentages:
+
+```go
+rs, err := client.GetRetention("dodge rock", bitesized.Daily, from, till)
+```
+
+This returns a result like below. The keys are sorted asc by time. The first entry is total number
+
+```
+[
+    { "day:2015-01-01 00:00:00 +0000 UTC": [ 30, 50, 10 ] },
+    { "day:2015-01-02 00:00:00 +0000 UTC": [ 50, 25 ] },
+    { "day:2015-01-03 00:00:00 +0000 UTC": [ 67 ] }
 ]
 ```
 

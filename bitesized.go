@@ -32,7 +32,7 @@ func NewClient(redisuri string) (*Bitesized, error) {
 	return client, nil
 }
 
-func (b *Bitesized) Operation(op Op, keys ...string) (int, error) {
+func (b *Bitesized) Operation(op Op, keys ...string) (float64, error) {
 	if op == NOT && len(keys) != 1 {
 		return 0, ErrNotOpAcceptsOnekey
 	}
@@ -57,7 +57,7 @@ func (b *Bitesized) Operation(op Op, keys ...string) (int, error) {
 		return 0, err
 	}
 
-	return count, nil
+	return float64(count), nil
 }
 
 func (b *Bitesized) storeIntervals(evnt string, offset int, t time.Time) error {

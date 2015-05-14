@@ -127,7 +127,63 @@ func TestRetention(t *testing.T) {
 				So(counts[0], ShouldEqual, 2)
 			}
 
-			Reset(func() { client.store.Do("FLUSHALL") })
+			Convey("It should results as percentages", func() {
+				retention, err := client.RetentionPercent("dodge rock", from, till, Hour)
+				So(err, ShouldBeNil)
+
+				for _, counts := range retention[0] {
+					So(len(counts), ShouldEqual, 6)
+
+					So(counts[0], ShouldEqual, 1)
+					So(counts[1], ShouldEqual, 100)
+					So(counts[2], ShouldEqual, 100)
+					So(counts[3], ShouldEqual, 0)
+					So(counts[4], ShouldEqual, 0)
+					So(counts[5], ShouldEqual, 0)
+				}
+
+				for _, counts := range retention[1] {
+					So(len(counts), ShouldEqual, 5)
+
+					So(counts[0], ShouldEqual, 2)
+					So(counts[1], ShouldEqual, 50)
+					So(counts[2], ShouldEqual, 0)
+					So(counts[3], ShouldEqual, 0)
+					So(counts[4], ShouldEqual, 0)
+				}
+
+				for _, counts := range retention[2] {
+					So(len(counts), ShouldEqual, 4)
+
+					So(counts[0], ShouldEqual, 1)
+					So(counts[1], ShouldEqual, 0)
+					So(counts[2], ShouldEqual, 0)
+					So(counts[3], ShouldEqual, 0)
+				}
+
+				for _, counts := range retention[3] {
+					So(len(counts), ShouldEqual, 3)
+
+					So(counts[0], ShouldEqual, 0)
+					So(counts[1], ShouldEqual, 0)
+					So(counts[2], ShouldEqual, 0)
+				}
+
+				for _, counts := range retention[4] {
+					So(len(counts), ShouldEqual, 2)
+
+					So(counts[0], ShouldEqual, 2)
+					So(counts[1], ShouldEqual, 100)
+				}
+
+				for _, counts := range retention[5] {
+					So(len(counts), ShouldEqual, 1)
+
+					So(counts[0], ShouldEqual, 2)
+				}
+
+				Reset(func() { client.store.Do("FLUSHALL") })
+			})
 		})
 	})
 }
