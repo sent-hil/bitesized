@@ -53,6 +53,15 @@ func TestGetOrSetUser(t *testing.T) {
 			So(id, ShouldEqual, 1)
 		})
 
+		Convey("It should get existing user by id", func() {
+			id, err := client.getOrSetUser(user)
+			So(err, ShouldBeNil)
+
+			username, err := client.getUserById(id)
+			So(err, ShouldBeNil)
+			So(username, ShouldEqual, user)
+		})
+
 		Reset(func() { client.store.Do("FLUSHALL") })
 	})
 }

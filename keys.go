@@ -22,11 +22,16 @@ var (
 	EventPrefixKey = "event"
 	UserListKey    = "user-list"
 	UserCounterKey = "user-counter"
+	UserIdListKey  = "user-id-list"
 )
 
 func (b *Bitesized) intervalkey(evnt string, t time.Time, i Interval) string {
 	intervalkey := nearestInterval(t, i)
 	return b.key(EventPrefixKey, evnt, intervalkey)
+}
+
+func (b *Bitesized) userIdListKey() string {
+	return b.key(UserIdListKey)
 }
 
 func (b *Bitesized) userListKey() string {
