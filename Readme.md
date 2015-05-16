@@ -123,10 +123,16 @@ Following operations are support:
 * XOR
 * NOT (only accepts 1 arg)
 
+Get list of users who did an event on particular time/interval:
+
+```go
+// returns list of users who did 'dodge rock' event in the last hour
+users, err := client.EventUser("dodge rock", time.Now(), Hour)
+```
+
 # TODO
 
 * Write blog post explaning bitmaps and this library
-* Option to return retention as percentages
 * List of events sorted DESC by user count metric
 * Http server
 * List of users who did an event metric

@@ -65,3 +65,27 @@ func TestGetOrSetUser(t *testing.T) {
 		Reset(func() { client.store.Do("FLUSHALL") })
 	})
 }
+
+func TestEventUsers(t *testing.T) {
+	Convey("", t, func() {
+		client, err := NewClient(testredis)
+		So(err, ShouldBeNil)
+
+		client.Intervals = []Interval{Hour}
+
+		err = client.TrackEvent("dodge rock", user, randomTime)
+		So(err, ShouldBeNil)
+
+		err = client.TrackEvent("dodge rock", user+"1", randomTime)
+		So(err, ShouldBeNil)
+
+		users, err := client.EventUsers("dodge rock", randomTime, Hour)
+		So(err, ShouldBeNil)
+
+		So(len(users), ShouldEqual, 2)
+		So(users[0], ShouldEqual, user)
+		So(users[1], ShouldEqual, user+"1")
+
+		Reset(func() { client.store.Do("FLUSHALL") })
+	})
+}
