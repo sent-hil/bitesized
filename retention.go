@@ -27,7 +27,7 @@ func (b *Bitesized) Retention(e string, f, t time.Time, i Interval) ([]Retention
 
 			counts = append(counts, c)
 
-			if end = end.Add(getDuration(i)); end.After(t) {
+			if end = end.Add(getDuration(end, i)); end.After(t) {
 				break
 			}
 		}
@@ -35,7 +35,7 @@ func (b *Bitesized) Retention(e string, f, t time.Time, i Interval) ([]Retention
 		r := Retention{nearestInterval(start, i): counts}
 		retentions = append(retentions, r)
 
-		if start = start.Add(getDuration(i)); start.After(t) {
+		if start = start.Add(getDuration(start, i)); start.After(t) {
 			break
 		}
 	}
