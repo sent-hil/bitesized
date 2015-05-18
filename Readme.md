@@ -31,7 +31,7 @@ Optionally, set intervals you want to track; by default these intervals are trac
 
 ```go
 client.Intervals = []Interval{
-  bitesized.Hour, bitesized.Daily, bitesized.Week, bitesized.Month,
+  bitesized.Hour, bitesized.Day, bitesized.Week, bitesized.Month,
 }
 ```
 
@@ -65,32 +65,32 @@ Get retention for specified interval:
 from := time.Date(2015, time.January, 1, 0, 0, 0, 0, time.UTC)
 till := time.Date(2015, time.January, 3, 0, 0, 0, 0, time.UTC)
 
-rs, err := client.GetRetention("dodge rock", bitesized.Daily, from, till)
+rs, err := client.Retention("dodge rock", from, till, bitesized.Day)
 ```
 
 This returns a result like below. The keys are sorted asc by time:
 
 ```
 [
-    { "day:2015-01-01 00:00:00 +0000 UTC": [ 30, 15, 3 ] },
-    { "day:2015-01-02 00:00:00 +0000 UTC": [ 50, 25 ] },
-    { "day:2015-01-03 00:00:00 +0000 UTC": [ 67 ] }
+    { "day:2015-01-01": [ 30, 15, 3 ] },
+    { "day:2015-01-02": [ 50, 25 ] },
+    { "day:2015-01-03": [ 67 ] }
 ]
 ```
 
 Get retention for specified interval in percentages:
 
 ```go
-rs, err := client.GetRetention("dodge rock", bitesized.Daily, from, till)
+rs, err := client.RetentionPercent("dodge rock", from, till, bitesized.Day)
 ```
 
 This returns a result like below. The keys are sorted asc by time. The first entry is total number
 
 ```
 [
-    { "day:2015-01-01 00:00:00 +0000 UTC": [ 30, 50, 10 ] },
-    { "day:2015-01-02 00:00:00 +0000 UTC": [ 50, 25 ] },
-    { "day:2015-01-03 00:00:00 +0000 UTC": [ 67 ] }
+    { "day:2015-01-01": [ 30, .5, .1 ] },
+    { "day:2015-01-02": [ 50, .25 ] },
+    { "day:2015-01-03": [ 67 ] }
 ]
 ```
 
@@ -127,17 +127,21 @@ Get list of users who did an event on particular time/interval:
 
 ```go
 // returns list of users who did 'dodge rock' event in the last hour
-users, err := client.EventUser("dodge rock", time.Now(), Hour)
+users, err := client.EventUsers("dodge rock", time.Now(), Hour)
 ```
 
 # TODO
 
 * Write blog post explaning bitmaps and this library
-* List of events sorted DESC by user count metric
+* Option to look back only x interval for retention metrics
+* Add method to remove user from specified/all events
+* Retention starting with an event, then comeback as diff. event(s)
+* Cohorts: users who did this event, also did
+* List of events sorted DESC/ASC by user count metric
 * Http server
-* List of users who did an event metric
 * List of users who didn't do an event metric
 * Identify user with properties
+* Option to return user with properties for metrics
 * Total count of users metric
-* Optimize bit maps storage?
 * Add method to undo an event
+* Move to lua scripts whenever possible
