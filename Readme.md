@@ -133,7 +133,7 @@ users, err := client.EventUsers("dodge rock", time.Now(), Hour)
 # TODO
 
 * Write blog post explaning bitmaps and this library
-* Option to look back only x interval for retention metrics
+* Option to look back only x intervals for retention metrics
 * Add method to remove user from specified/all events
 * Retention starting with an event, then comeback as diff. event(s)
 * Cohorts: users who did this event, also did
@@ -145,3 +145,4 @@ users, err := client.EventUsers("dodge rock", time.Now(), Hour)
 * Total count of users metric
 * Add method to undo an event
 * Move to lua scripts whenever possible
+* Add more intervals: biweekly, bimonthly quarter
