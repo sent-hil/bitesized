@@ -135,8 +135,8 @@ func TestRetention(t *testing.T) {
 					So(len(counts), ShouldEqual, 6)
 
 					So(counts[0], ShouldEqual, 1)
-					So(counts[1], ShouldEqual, 100)
-					So(counts[2], ShouldEqual, 100)
+					So(counts[1], ShouldEqual, 1)
+					So(counts[2], ShouldEqual, 1)
 					So(counts[3], ShouldEqual, 0)
 					So(counts[4], ShouldEqual, 0)
 					So(counts[5], ShouldEqual, 0)
@@ -146,7 +146,7 @@ func TestRetention(t *testing.T) {
 					So(len(counts), ShouldEqual, 5)
 
 					So(counts[0], ShouldEqual, 2)
-					So(counts[1], ShouldEqual, 50)
+					So(counts[1], ShouldEqual, .5)
 					So(counts[2], ShouldEqual, 0)
 					So(counts[3], ShouldEqual, 0)
 					So(counts[4], ShouldEqual, 0)
@@ -173,7 +173,7 @@ func TestRetention(t *testing.T) {
 					So(len(counts), ShouldEqual, 2)
 
 					So(counts[0], ShouldEqual, 2)
-					So(counts[1], ShouldEqual, 100)
+					So(counts[1], ShouldEqual, 1)
 				}
 
 				for _, counts := range retention[5] {
