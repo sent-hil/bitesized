@@ -60,7 +60,8 @@ func (b *Bitesized) RetentionPercent(e string, f, t time.Time, i Interval) ([]Re
 					value = r / first
 				}
 
-				percents = append(percents, value*100)
+				value = (float64(int(value*100)) / 100)
+				percents = append(percents, value)
 			}
 
 			rets[timekey] = percents
