@@ -68,6 +68,8 @@ func TestCountEvent(t *testing.T) {
 		client, err := NewClient(testredis)
 		So(err, ShouldBeNil)
 
+		client.Intervals = []Interval{Hour}
+
 		Convey("It should return 0 if no user did event", func() {
 			count, err := client.CountEvent("dodge rock", time.Now(), Hour)
 			So(err, ShouldBeNil)

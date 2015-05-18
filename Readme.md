@@ -27,11 +27,11 @@ func main() {
 }
 ```
 
-Optionally, set intervals you want to track; by default these intervals are tracked: `hourly, daily, weekly and monthly`:
+Optionally, set intervals you want to track; by default these intervals are tracked: `daily, weekly and monthly`:
 
 ```go
 client.Intervals = []Interval{
-  bitesized.Hour, bitesized.Day, bitesized.Week, bitesized.Month,
+  bitesized.Hour, bitesized.Day, bitesized.Week, bitesized.Month, bitesized.Year
 }
 ```
 
