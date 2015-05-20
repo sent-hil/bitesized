@@ -139,11 +139,11 @@ users, err := client.EventUsers("dodge rock", time.Now(), Hour)
 * Add method to remove user from specified/all events
 * Retention starting with an event, then comeback as diff. event(s)
 * Cohorts: users who did this event, also did
-* List of events sorted DESC/ASC by user count metric
+* List of events sorted DESC/ASC by user count
 * Http server
 * List of users who didn't do an event metric
 * Identify user with properties
-* Option to return user with properties for metrics
+* Option to return user with identified properties for metrics
 * Total count of users metric
 * Add method to undo an event
 * Move to lua scripts wherever possible
