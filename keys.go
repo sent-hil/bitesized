@@ -42,6 +42,10 @@ func (b *Bitesized) userCounterKey() string {
 	return b.key(UserCounterKey)
 }
 
+func (b *Bitesized) allEventsKey() string {
+	return b.key(EventPrefixKey) + ":*"
+}
+
 func (b *Bitesized) key(suffix ...string) string {
 	dasherized := []string{}
 	for _, s := range suffix {

@@ -47,6 +47,10 @@ Track an event that an user did:
 err = client.TrackEvent("dodge rock", "indianajones", time.Now())
 ```
 
+If `indianajones` above is a new user, `user-counter` key is incremented and value stored in `user-list` key. That id is used as bit offset for events.
+
+This approach, as opposed to be checksum, enables us to take advantage of all offsets in a key in the beginning. However, as time goes on and old users generate less and less events, bit offsets will be wasted. In future sparse bitmaps maybe used to reduce wasting of bits such as here: https://github.com/bilus/redis-bitops
+
 Get count of users who did an event on particular interval:
 
 ```go
@@ -129,6 +133,17 @@ Following operations are support:
 * NOT (only accepts 1 arg)
 
 Get list of users who did an event on particular time/interval:
+
+```go
+// returns list of users who did 'dodge rock' event in the last hour
+users, err := client.EventUsers("dodge rock", time.Now(), Hour)
+```
+
+Untrack ALL events and ALL intervals for user:
+
+```go
+err = client.RemoveUser("indianajones")
+```
 
 ```go
 // returns list of users who did 'dodge rock' event in the last hour

@@ -67,7 +67,7 @@ func TestGetOrSetUser(t *testing.T) {
 }
 
 func TestEventUsers(t *testing.T) {
-	Convey("", t, func() {
+	Convey("It should return list of users who did an event", t, func() {
 		client, err := NewClient(testredis)
 		So(err, ShouldBeNil)
 
@@ -85,6 +85,28 @@ func TestEventUsers(t *testing.T) {
 		So(len(users), ShouldEqual, 2)
 		So(users[0], ShouldEqual, user)
 		So(users[1], ShouldEqual, user+"1")
+
+		Reset(func() { client.store.Do("FLUSHALL") })
+	})
+}
+
+func TestRemoveUser(t *testing.T) {
+	Convey("It should remove user", t, func() {
+		client, err := NewClient(testredis)
+		So(err, ShouldBeNil)
+
+		client.Intervals = []Interval{Hour, Day}
+
+		err = client.TrackEvent("dodge rock", user, randomTime)
+		So(err, ShouldBeNil)
+
+		err = client.RemoveUser(user)
+		So(err, ShouldBeNil)
+
+		didEvent, err := client.DidEvent("dodge rock", user, randomTime, Hour)
+		So(err, ShouldBeNil)
+
+		So(didEvent, ShouldBeFalse)
 
 		Reset(func() { client.store.Do("FLUSHALL") })
 	})

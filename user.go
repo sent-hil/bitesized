@@ -32,6 +32,28 @@ func (b *Bitesized) EventUsers(e string, t time.Time, i Interval) ([]string, err
 	return redis.Strings(b.store.Do("HMGET", args...))
 }
 
+func (b *Bitesized) RemoveUser(user string) error {
+	eventkeys, err := redis.Strings(b.store.Do("KEYS", b.allEventsKey()))
+	if err != nil {
+		return err
+	}
+
+	offset, err := b.getOrSetUser(user)
+	if err != nil {
+		return err
+	}
+
+	b.store.Send("MULTI")
+
+	for _, event := range eventkeys {
+		b.store.Send("SETBIT", event, offset, Off)
+	}
+
+	_, err = b.store.Do("EXEC")
+
+	return err
+}
+
 func (b *Bitesized) getOrSetUser(user string) (int, error) {
 	user = dasherize(user)
 
