@@ -8,43 +8,50 @@ import (
 	. "github.com/smartystreets/goconvey/convey"
 )
 
-func TestTrackEvent(t *testing.T) {
-	Convey("It should return error unless event or user", t, func() {
+func TestTrackUntrackEvent(t *testing.T) {
+	Convey("", t, func() {
 		client, err := NewClient(testredis)
 		So(err, ShouldBeNil)
 
-		err = client.TrackEvent("", user, time.Now())
-		So(err, ShouldEqual, ErrInvalidArg)
+		Convey("It should return error for track unless event or user", func() {
+			err = client.TrackEvent("", user, time.Now())
+			So(err, ShouldEqual, ErrInvalidArg)
+		})
 
-		err = client.TrackEvent("dodge", "", time.Now())
-		So(err, ShouldEqual, ErrInvalidArg)
+		Convey("It should return error for untrack unless event or user", func() {
+			err = client.UntrackEvent("dodge", "", time.Now())
+			So(err, ShouldEqual, ErrInvalidArg)
+		})
 	})
 
-	Convey("It should track event for single interval", t, func() {
+	Convey("", t, func() {
 		client, err := NewClient(testredis)
 		So(err, ShouldBeNil)
 
 		client.Intervals = []Interval{Year}
 
-		err = client.TrackEvent("dodge rock", user, randomTime)
-		So(err, ShouldBeNil)
+		Convey("It should track event for single interval", func() {
+			err = client.TrackEvent("dodge rock", user, randomTime)
+			So(err, ShouldBeNil)
 
-		bitvalue, err := redis.Int(client.store.Do("GETBIT", "bitesized:event:dodge-rock:year:1981", 1))
-		So(err, ShouldBeNil)
-		So(bitvalue, ShouldEqual, 1)
+			bitvalue, err := redis.Int(client.store.Do("GETBIT", "bitesized:event:dodge-rock:year:1981", 1))
+			So(err, ShouldBeNil)
+			So(bitvalue, ShouldEqual, 1)
+		})
 
-		Reset(func() { client.store.Do("FLUSHALL") })
+		Convey("It should untrack event for single interval", func() {
+			err = client.UntrackEvent("dodge rock", user, randomTime)
+			So(err, ShouldBeNil)
+
+			bitvalue, err := redis.Int(client.store.Do("GETBIT", "bitesized:event:dodge-rock:year:1981", 1))
+			So(err, ShouldBeNil)
+			So(bitvalue, ShouldEqual, 0)
+
+			Reset(func() { client.store.Do("FLUSHALL") })
+		})
 	})
 
-	Convey("It should track event for multiple intervals", t, func() {
-		client, err := NewClient(testredis)
-		So(err, ShouldBeNil)
-
-		client.Intervals = []Interval{Hour, Day, Week, Month, Year}
-
-		err = client.TrackEvent("dodge rock", user, randomTime)
-		So(err, ShouldBeNil)
-
+	Convey("", t, func() {
 		keys := []string{
 			"bitesized:event:dodge-rock:hour:1981-06-12-01:00",
 			"bitesized:event:dodge-rock:day:1981-06-12",
@@ -53,11 +60,32 @@ func TestTrackEvent(t *testing.T) {
 			"bitesized:event:dodge-rock:year:1981",
 		}
 
-		for _, k := range keys {
-			bitvalue, err := redis.Int(client.store.Do("GETBIT", k, 1))
+		client, err := NewClient(testredis)
+		So(err, ShouldBeNil)
+
+		client.Intervals = []Interval{Hour, Day, Week, Month, Year}
+
+		Convey("It should track event for multiple intervals", func() {
+			err = client.TrackEvent("dodge rock", user, randomTime)
 			So(err, ShouldBeNil)
-			So(bitvalue, ShouldEqual, 1)
-		}
+
+			for _, k := range keys {
+				bitvalue, err := redis.Int(client.store.Do("GETBIT", k, 1))
+				So(err, ShouldBeNil)
+				So(bitvalue, ShouldEqual, 1)
+			}
+		})
+
+		Convey("It should untrack event for multiple intervals", func() {
+			err = client.UntrackEvent("dodge rock", user, randomTime)
+			So(err, ShouldBeNil)
+
+			for _, k := range keys {
+				bitvalue, err := redis.Int(client.store.Do("GETBIT", k, 1))
+				So(err, ShouldBeNil)
+				So(bitvalue, ShouldEqual, 0)
+			}
+		})
 
 		Reset(func() { client.store.Do("FLUSHALL") })
 	})

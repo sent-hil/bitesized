@@ -60,15 +60,24 @@ func (b *Bitesized) Operation(op Op, keys ...string) (float64, error) {
 	return float64(count), nil
 }
 
-func (b *Bitesized) storeIntervals(evnt string, offset int, t time.Time) error {
+func (b *Bitesized) changeBit(e, u string, t time.Time, s int) error {
+	if e == "" || u == "" {
+		return ErrInvalidArg
+	}
+
+	offset, err := b.getOrSetUser(u)
+	if err != nil {
+		return err
+	}
+
 	b.store.Send("MULTI")
 
 	for _, interval := range b.Intervals {
-		key := b.intervalkey(evnt, t, interval)
-		b.store.Send("SETBIT", key, offset, On)
+		key := b.intervalkey(e, t, interval)
+		b.store.Send("SETBIT", key, offset, s)
 	}
 
-	_, err := b.store.Do("EXEC")
+	_, err = b.store.Do("EXEC")
 
 	return err
 }

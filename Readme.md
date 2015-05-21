@@ -139,7 +139,7 @@ Get list of users who did an event on particular time/interval:
 users, err := client.EventUsers("dodge rock", time.Now(), Hour)
 ```
 
-Untrack ALL events and ALL intervals for user:
+Untrack ALL events and ALL intervals for user. Note, the user isn't deleted from `user-list` hash. If new event is track for same user, it'll use the same bit offset.
 
 ```go
 err = client.RemoveUser("indianajones")
@@ -154,7 +154,6 @@ users, err := client.EventUsers("dodge rock", time.Now(), Hour)
 
 * Write blog post explaning bitmaps and this library
 * Add documentation for functions
-* Add method to remove user from specified/all events
 * Retention starting with an event, then comeback as diff. event(s)
 * Cohorts: users who did this event, also did
 * List of events sorted DESC/ASC by user count

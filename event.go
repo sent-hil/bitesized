@@ -8,16 +8,11 @@ import (
 )
 
 func (b *Bitesized) TrackEvent(evnt, user string, tstamp time.Time) error {
-	if evnt == "" || user == "" {
-		return ErrInvalidArg
-	}
+	return b.changeBit(evnt, user, tstamp, On)
+}
 
-	offset, err := b.getOrSetUser(user)
-	if err != nil {
-		return err
-	}
-
-	return b.storeIntervals(evnt, offset, tstamp)
+func (b *Bitesized) UntrackEvent(evnt, user string, tstamp time.Time) error {
+	return b.changeBit(evnt, user, tstamp, Off)
 }
 
 func (b *Bitesized) CountEvent(e string, t time.Time, i Interval) (int, error) {
