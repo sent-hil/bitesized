@@ -37,12 +37,12 @@ func TestRetention(t *testing.T) {
 		Convey("It should error if from is after till", func() {
 			till := from.Add(1 * time.Hour)
 
-			_, err := client.Retention("dodge rock", till, from, Hour)
+			_, err := client.Retention("dodge rock", till, from, Hour, 1)
 			So(err, ShouldEqual, ErrFromAfterTill)
 		})
 
 		Convey("It should return result with empty values", func() {
-			retention, err := client.Retention("dodge rock", from, till, Hour)
+			retention, err := client.Retention("dodge rock", from, till, Hour, 5)
 			So(err, ShouldBeNil)
 
 			So(len(retention), ShouldEqual, 6)
@@ -61,20 +61,19 @@ func TestRetention(t *testing.T) {
 				}
 			}
 
-			retention, err := client.Retention("dodge rock", from, till, Hour)
+			retention, err := client.Retention("dodge rock", from, till, Hour, 5)
 			So(err, ShouldBeNil)
 
 			So(len(retention), ShouldEqual, 6)
 
 			for _, counts := range retention[0] {
-				So(len(counts), ShouldEqual, 6)
+				So(len(counts), ShouldEqual, 5)
 
 				So(counts[0], ShouldEqual, 1)
 				So(counts[1], ShouldEqual, 1)
 				So(counts[2], ShouldEqual, 1)
 				So(counts[3], ShouldEqual, 0)
 				So(counts[4], ShouldEqual, 0)
-				So(counts[5], ShouldEqual, 0)
 			}
 
 			for _, counts := range retention[1] {
@@ -128,18 +127,17 @@ func TestRetention(t *testing.T) {
 			}
 
 			Convey("It should results as percentages", func() {
-				retention, err := client.RetentionPercent("dodge rock", from, till, Hour)
+				retention, err := client.RetentionPercent("dodge rock", from, till, Hour, 5)
 				So(err, ShouldBeNil)
 
 				for _, counts := range retention[0] {
-					So(len(counts), ShouldEqual, 6)
+					So(len(counts), ShouldEqual, 5)
 
 					So(counts[0], ShouldEqual, 1)
 					So(counts[1], ShouldEqual, 1)
 					So(counts[2], ShouldEqual, 1)
 					So(counts[3], ShouldEqual, 0)
 					So(counts[4], ShouldEqual, 0)
-					So(counts[5], ShouldEqual, 0)
 				}
 
 				for _, counts := range retention[1] {

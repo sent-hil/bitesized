@@ -4,7 +4,7 @@ import "time"
 
 type Retention map[string][]float64
 
-func (b *Bitesized) Retention(e string, f, t time.Time, i Interval) ([]Retention, error) {
+func (b *Bitesized) Retention(e string, f, t time.Time, i Interval, ct int) ([]Retention, error) {
 	if f.After(t) {
 		return nil, ErrFromAfterTill
 	}
@@ -26,6 +26,9 @@ func (b *Bitesized) Retention(e string, f, t time.Time, i Interval) ([]Retention
 			}
 
 			counts = append(counts, c)
+			if len(counts) == ct {
+				break
+			}
 
 			if end = end.Add(getDuration(end, i)); end.After(t) {
 				break
@@ -43,8 +46,8 @@ func (b *Bitesized) Retention(e string, f, t time.Time, i Interval) ([]Retention
 	return retentions, nil
 }
 
-func (b *Bitesized) RetentionPercent(e string, f, t time.Time, i Interval) ([]Retention, error) {
-	retentions, err := b.Retention(e, f, t, i)
+func (b *Bitesized) RetentionPercent(e string, f, t time.Time, i Interval, ct int) ([]Retention, error) {
+	retentions, err := b.Retention(e, f, t, i, ct)
 	if err != nil {
 		return nil, err
 	}

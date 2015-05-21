@@ -65,7 +65,12 @@ Get retention for specified interval:
 from := time.Date(2015, time.January, 1, 0, 0, 0, 0, time.UTC)
 till := time.Date(2015, time.January, 3, 0, 0, 0, 0, time.UTC)
 
-rs, err := client.Retention("dodge rock", from, till, bitesized.Day)
+// this defines how many days of retention to return for each day
+// for example if your interval contains 20 days, but want to look
+// back only 10 days for each day in your interval
+numOfDaysToLookBack := 10
+
+rs, err := client.Retention("dodge rock", from, till, bitesized.Day, numOfDaysToLookBack)
 ```
 
 This returns a result like below. The keys are sorted asc by time:
@@ -81,7 +86,7 @@ This returns a result like below. The keys are sorted asc by time:
 Get retention for specified interval in percentages:
 
 ```go
-rs, err := client.RetentionPercent("dodge rock", from, till, bitesized.Day)
+rs, err := client.RetentionPercent("dodge rock", from, till, bitesized.Day, 10)
 ```
 
 This returns a result like below. The keys are sorted asc by time. The first entry is total number
@@ -134,7 +139,6 @@ users, err := client.EventUsers("dodge rock", time.Now(), Hour)
 
 * Write blog post explaning bitmaps and this library
 * Add documentation for functions
-* Option to look back only x intervals for retention metrics
 * Add method to remove user from specified/all events
 * Retention starting with an event, then comeback as diff. event(s)
 * Cohorts: users who did this event, also did
