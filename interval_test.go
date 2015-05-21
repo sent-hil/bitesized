@@ -10,6 +10,11 @@ import (
 var randomTime = time.Date(1981, time.June, 12, 01, 1, 0, 0, time.UTC)
 
 func TestNearestInterval(t *testing.T) {
+	Convey("It should empty for 'All'", t, func() {
+		n := nearestInterval(randomTime, All)
+		So(n, ShouldEqual, "all")
+	})
+
 	Convey("It should find nearest hour", t, func() {
 		n := nearestInterval(randomTime, Hour)
 		So(n, ShouldEqual, "hour:1981-06-12-01:00")

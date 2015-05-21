@@ -12,7 +12,8 @@ import (
 type Interval int
 
 const (
-	Hour Interval = iota
+	All Interval = iota
+	Hour
 	Day
 	Week
 	Month
@@ -23,6 +24,8 @@ func nearestInterval(t time.Time, interval Interval) string {
 	n := now.New(t.UTC())
 
 	switch interval {
+	case All:
+		return "all"
 	case Day:
 		layout := "day:2006-01-02"
 		return n.BeginningOfDay().Format(layout)

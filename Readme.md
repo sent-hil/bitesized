@@ -27,11 +27,11 @@ func main() {
 }
 ```
 
-Optionally, set intervals you want to track; by default these intervals are tracked: `daily, weekly and monthly`:
+Optionally, set intervals you want to track; by default these intervals are tracked: `all, daily, weekly and monthly`:
 
 ```go
 client.Intervals = []Interval{
-  bitesized.Hour, bitesized.Day, bitesized.Week, bitesized.Month, bitesized.Year
+  bitesized.All, bitesized.Hour, bitesized.Day, bitesized.Week, bitesized.Month, bitesized.Year
 }
 ```
 
@@ -133,7 +133,6 @@ users, err := client.EventUsers("dodge rock", time.Now(), Hour)
 # TODO
 
 * Write blog post explaning bitmaps and this library
-* Add 'ALL' interval that's set if user does event ever
 * Add documentation for functions
 * Option to look back only x intervals for retention metrics
 * Add method to remove user from specified/all events
