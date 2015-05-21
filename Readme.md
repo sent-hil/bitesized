@@ -4,7 +4,9 @@ bitesized is a library that uses redis's bit operations to store and calculate a
 
 ## Motivation
 
-It started when I saw a [blog post](http://blog.getspool.com/2011/11/29/fast-easy-realtime-metrics-using-redis-bitmaps/) about using redis bitmaps to store user retention data. It sounded pretty neat and simple, not to mention fun, to implement.
+It started when I saw a [blog post](http://blog.getspool.com/2011/11/29/fast-easy-realtime-metrics-using-redis-bitmaps/) about using redis bitmaps to store user event data. It sounded pretty neat and simple, not to mention fun, to implement.
+
+This project started as simple wrapper around bit operations, but has since taken a life of its own. I'm currently in the process of adding functionality that's a level higher, ie provide user analytics, not just store data.
 
 ## Install
 
@@ -139,10 +141,16 @@ Get list of users who did an event on particular time/interval:
 users, err := client.EventUsers("dodge rock", time.Now(), Hour)
 ```
 
-Untrack ALL events and ALL intervals for user. Note, the user isn't deleted from `user-list` hash. If new event is track for same user, it'll use the same bit offset.
+Untrack ALL events and ALL intervals for user. Note, the user isn't deleted from `user-list` hash. If new event is tracked for the user, it'll use the same bit offset as before.
 
 ```go
 err = client.RemoveUser("indianajones")
+```
+
+Untrack an event for user. This will only untrack the client specified intervals.
+
+```go
+err = client.UntrackEvent("dodge rock", "indianajones", time.Now())
 ```
 
 ```go
