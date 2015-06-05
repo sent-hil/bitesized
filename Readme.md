@@ -84,7 +84,7 @@ This returns a result like below. The keys are sorted asc by time:
 ```
 [
     { "day:2015-01-01": [ 30, 15, 3 ] },
-    { "day:2015-01-02": [ 50, 25 ] },
+    { "day:2015-01-02": [ 50, 10 ] },
     { "day:2015-01-03": [ 67 ] }
 ]
 ```
@@ -99,8 +99,8 @@ This returns a result like below. The keys are sorted asc by time. The first ent
 
 ```
 [
-    { "day:2015-01-01": [ 30, .5, .1 ] },
-    { "day:2015-01-02": [ 50, .25 ] },
+    { "day:2015-01-01": [ 30, .5, .01 ] },
+    { "day:2015-01-02": [ 50, .05 ] },
     { "day:2015-01-03": [ 67 ] }
 ]
 ```
