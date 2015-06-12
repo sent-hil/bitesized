@@ -17,6 +17,7 @@ var (
 	NOT Op = "NOT"
 )
 
+// Defines keys that are used by library.
 var (
 	EventRegex     = "event:(.*?):"
 	EventPrefixKey = "event"

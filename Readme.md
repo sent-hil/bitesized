@@ -161,7 +161,6 @@ users, err := client.EventUsers("dodge rock", time.Now(), Hour)
 # TODO
 
 * Write blog post explaning bitmaps and this library
-* Add documentation for functions
 * Retention starting with an event, then comeback as diff. event(s)
 * Cohorts: users who did this event, also did
 * List of events sorted DESC/ASC by user count

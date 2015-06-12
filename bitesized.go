@@ -10,6 +10,7 @@ import (
 type Bitesized struct {
 	store redis.Conn
 
+	// Intervals stores list of intervals that are tracked.
 	Intervals []Interval
 
 	// KeyPrefix is the prefix that'll be appended to all keys.

@@ -4,6 +4,8 @@ import "time"
 
 type Retention map[string][]float64
 
+// Retention returns retention for a particular event and particular interval.
+// Each retention metric is cumulative of all previous intervals.
 func (b *Bitesized) Retention(e string, f, t time.Time, i Interval, ct int) ([]Retention, error) {
 	if f.After(t) {
 		return nil, ErrFromAfterTill
@@ -46,6 +48,9 @@ func (b *Bitesized) Retention(e string, f, t time.Time, i Interval, ct int) ([]R
 	return retentions, nil
 }
 
+// RetentionPercent returns retention percentage for a particular event and
+// particular interval. It's different from Retention in that it returns
+// percentages instead of actual numbers.
 func (b *Bitesized) RetentionPercent(e string, f, t time.Time, i Interval, ct int) ([]Retention, error) {
 	retentions, err := b.Retention(e, f, t, i, ct)
 	if err != nil {

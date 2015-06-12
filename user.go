@@ -6,11 +6,13 @@ import (
 	"github.com/garyburd/redigo/redis"
 )
 
+// IsUserNew returns if an user has been seen by the library or not.
 func (b *Bitesized) IsUserNew(user string) (bool, error) {
 	userExists, err := redis.Bool(b.store.Do("HEXISTS", b.userListKey(), user))
 	return !userExists, err
 }
 
+// EventUsers returns list of users who did a given event for given interval and time.
 func (b *Bitesized) EventUsers(e string, t time.Time, i Interval) ([]string, error) {
 	key := b.intervalkey(e, t, i)
 	str, err := redis.String(b.store.Do("GET", key))
@@ -32,6 +34,7 @@ func (b *Bitesized) EventUsers(e string, t time.Time, i Interval) ([]string, err
 	return redis.Strings(b.store.Do("HMGET", args...))
 }
 
+// RemoveUser unsets all events did by an user.
 func (b *Bitesized) RemoveUser(user string) error {
 	eventkeys, err := redis.Strings(b.store.Do("KEYS", b.allEventsKey()))
 	if err != nil {
