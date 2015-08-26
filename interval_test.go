@@ -7,7 +7,7 @@ import (
 	. "github.com/smartystreets/goconvey/convey"
 )
 
-var randomTime = time.Date(1981, time.June, 12, 01, 1, 0, 0, time.UTC)
+var randomTime = time.Date(1981, time.June, 12, 01, 42, 0, 0, time.UTC)
 
 func TestNearestInterval(t *testing.T) {
 	Convey("It should empty for 'All'", t, func() {
@@ -39,6 +39,46 @@ func TestNearestInterval(t *testing.T) {
 		n := nearestInterval(randomTime, Year)
 		So(n, ShouldEqual, "year:1981")
 	})
+
+	Convey("It should find nearest quarter", t, func() {
+		n := nearestInterval(randomTime, Quarter)
+		So(n, ShouldEqual, "quarter:1981-04")
+	})
+
+	Convey("It should find nearest 10 minute cycle", t, func() {
+		n := nearestInterval(randomTime, TenMinutes)
+		So(n, ShouldEqual, "ten_minutes:1981-06-12-01:40")
+	})
+
+	Convey("It should find nearest 30 minute cycle", t, func() {
+		n := nearestInterval(randomTime, ThirtyMinutes)
+		So(n, ShouldEqual, "thirty_minutes:1981-06-12-01:30")
+	})
+
+	Convey("It should find nearest biweekly date (first part)", t, func() {
+		testingTime := time.Date(1981, time.June, 12, 01, 42, 0, 0, time.UTC)
+		n := nearestInterval(testingTime, Biweekly)
+		So(n, ShouldEqual, "biweekly:1981-06-10")
+	})
+
+	Convey("It should find nearest biweekly date (second part)", t, func() {
+		testingTime := time.Date(1981, time.June, 16, 01, 42, 0, 0, time.UTC)
+		n := nearestInterval(testingTime, Biweekly)
+		So(n, ShouldEqual, "biweekly:1981-06-14")
+	})
+
+	Convey("It should find nearest bimonthly date (first part)", t, func() {
+		testingTime := time.Date(1981, time.June, 12, 01, 42, 0, 0, time.UTC)
+		n := nearestInterval(testingTime, Bimonthly)
+		So(n, ShouldEqual, "bimonthly:1981-06-01")
+	})
+
+	Convey("It should find nearest bimonthly date (second part)", t, func() {
+		testingTime := time.Date(1981, time.June, 28, 01, 42, 0, 0, time.UTC)
+		n := nearestInterval(testingTime, Bimonthly)
+		So(n, ShouldEqual, "bimonthly:1981-06-15")
+	})
+
 }
 
 func TestGetDuration(t *testing.T) {

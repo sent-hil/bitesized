@@ -171,4 +171,3 @@ users, err := client.EventUsers("dodge rock", time.Now(), Hour)
 * Total count of users metric
 * Add method to undo an event
 * Move to lua scripts wherever possible
-* Add more intervals: biweekly, bimonthly, quarter
