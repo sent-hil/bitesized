@@ -160,6 +160,7 @@ users, err := client.EventUsers("dodge rock", time.Now(), Hour)
 
 # TODO
 
+* Make threadsafe by using redis conn pooling
 * Write blog post explaning bitmaps and this library
 * Retention starting with an event, then comeback as diff. event(s)
 * Cohorts: users who did this event, also did
